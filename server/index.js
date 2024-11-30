@@ -3,13 +3,20 @@ import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dbConnect from "./lib/db.con.js";
+import { v2 as cloudinary } from "cloudinary";
 const app = express();
+dotenv.config();
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
-dotenv.config();
-
 dbConnect();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 const envMode = process.env.NODE_ENV || "DEVELOPMENT";
 import { errorMiddleware } from "./middlewares/error.js";
 import userRouter from "./routes/user.route.js";
