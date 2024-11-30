@@ -2,11 +2,14 @@ import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import dbConnect from "./lib/db.con.js";
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 dotenv.config();
+
+dbConnect();
 const envMode = process.env.NODE_ENV || "DEVELOPMENT";
 
 import productRouter from "./routes/product.route.js";
