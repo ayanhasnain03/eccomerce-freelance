@@ -11,10 +11,11 @@ dotenv.config();
 
 dbConnect();
 const envMode = process.env.NODE_ENV || "DEVELOPMENT";
-
-import productRouter from "./routes/product.route.js";
 import { errorMiddleware } from "./middlewares/error.js";
+import userRouter from "./routes/user.route.js";
+import productRouter from "./routes/product.route.js";
 
+app.use("/api/v1/user", userRouter);
 app.use("/api/v1/products", productRouter);
 
 app.listen(process.env.PORT, () => {
