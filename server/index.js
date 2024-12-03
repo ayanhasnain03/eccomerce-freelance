@@ -21,9 +21,10 @@ const envMode = process.env.NODE_ENV || "DEVELOPMENT";
 import { errorMiddleware } from "./middlewares/error.js";
 import userRouter from "./routes/user.route.js";
 import productRouter from "./routes/product.route.js";
-
+import categoryRouter from "./routes/category.route.js";
 app.use("/api/v1/user", userRouter);
-app.use("/api/v1/products", productRouter);
+app.use("/api/v1/category", categoryRouter);
+app.use("/api/v1/product", productRouter);
 
 app.listen(process.env.PORT, () => {
   console.log(

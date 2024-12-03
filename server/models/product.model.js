@@ -21,11 +21,11 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
-    category: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Category",
-      required: true,
-    },
+    // category: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Category",
+    //   required: true,
+    // },
     brand: {
       type: String,
       required: true,
