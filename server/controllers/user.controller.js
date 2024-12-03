@@ -1,13 +1,14 @@
 import { asyncHandler } from "../middlewares/error.js";
 import { User } from "../models/user.modal.js";
-import { uploadFile } from "../utils/features.js";
+import { sendTokenToClient, uploadFile } from "../utils/features.js";
 import { SendError } from "../utils/sendError.js";
 
 export const userRegister = asyncHandler(async (req, res, next) => {
   const file = req.file || [];
   if (!file) return next(new SendError("Avatar is required", 400));
   const { name, email, password, gender } = req.body;
-
+  const existUser = await User.findOne({ email });
+  if (existUser) return next(new SendError("User already exist", 400));
   const result = await uploadFile([file]);
   const avatar = {
     public_id: result[0].public_id,
@@ -20,8 +21,17 @@ export const userRegister = asyncHandler(async (req, res, next) => {
     gender,
     avatar,
   });
-  res.status(201).json({
-    success: true,
-    message: `User ${user.name} registered successfully`,
-  });
+  sendTokenToClient(res, user, 201, "User Registered Successfully");
+});
+
+export const loginUser = asyncHandler(async (req, res, next) => {
+  const { email, password } = req.body;
+  if (!email || !password)
+    return next(new SendError("All fields are required", 400));
+  const user = await User.findOne({ email }).select("+password");
+  if (!user) return next(new SendError("Invalid Email or Password", 400));
+  const isPasswordMatched = await user.comparePassword(password);
+  if (!isPasswordMatched)
+    return next(new SendError("Invalid Email or Password", 400));
+  sendTokenToClient(res, user, 200, "User Logged In Successfully");
 });

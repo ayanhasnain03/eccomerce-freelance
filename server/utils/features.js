@@ -32,3 +32,18 @@ export const uploadFile = async (files = []) => {
     throw new SendError(error.message || "Something went wrong", 400);
   }
 };
+
+export const cookieOpt = {
+  maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
+  sameSite: "none",
+  httpOnly: true,
+  secure: true,
+};
+
+export const sendTokenToClient = (res, user, statusCode = 200, message) => {
+  const token = user.getJWTToken();
+  res
+    .status(statusCode)
+    .cookie("token", token, cookieOpt)
+    .json({ success: true, message, user });
+};
