@@ -35,7 +35,16 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     return next(new SendError("Invalid Email or Password", 400));
   sendTokenToClient(res, user, 200, "User Logged In Successfully");
 });
-
+export const logOutUser = asyncHandler(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+  res.status(200).json({
+    success: true,
+    message: "User Logged Out Successfully",
+  });
+});
 export const getProfile = asyncHandler(async (req, res, next) => {
   const getUser = await User.findById(req.user).select("-password");
   res.json({
