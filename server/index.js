@@ -22,6 +22,8 @@ import { errorMiddleware } from "./middlewares/error.js";
 import userRouter from "./routes/user.route.js";
 import productRouter from "./routes/product.route.js";
 import categoryRouter from "./routes/category.route.js";
+import { generateFakeProducts } from "./seeds/product.seed.js";
+
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/category", categoryRouter);
 app.use("/api/v1/product", productRouter);

@@ -21,11 +21,11 @@ const productSchema = new mongoose.Schema(
         },
       },
     ],
-    // category: {
-    //   type: mongoose.Schema.Types.ObjectId,
-    //   ref: "Category",
-    //   required: true,
-    // },
+    category: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Category",
+      required: true,
+    },
     brand: {
       type: String,
       required: true,
@@ -52,6 +52,11 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
       default: 0,
+    },
+    sizes: {
+      type: String,
+      enum: ["S", "M", "L", "XL", "XXL"],
+      required: true,
     },
     reviews: [
       {
