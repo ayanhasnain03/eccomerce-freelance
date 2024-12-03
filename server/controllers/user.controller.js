@@ -2,7 +2,7 @@ import { asyncHandler } from "../middlewares/error.js";
 import { User } from "../models/user.modal.js";
 import { sendTokenToClient, uploadFile } from "../utils/features.js";
 import { SendError } from "../utils/sendError.js";
-
+import cloudinary from "cloudinary";
 export const userRegister = asyncHandler(async (req, res, next) => {
   const file = req.file || [];
   if (!file) return next(new SendError("Avatar is required", 400));
@@ -23,7 +23,6 @@ export const userRegister = asyncHandler(async (req, res, next) => {
   });
   sendTokenToClient(res, user, 201, "User Registered Successfully");
 });
-
 export const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password)
@@ -57,6 +56,48 @@ export const getProfile = asyncHandler(async (req, res, next) => {
       gender: getUser.gender,
       createdAt: getUser.createdAt,
       updatedAt: getUser.updatedAt,
+    },
+  });
+});
+export const updateProfile = asyncHandler(async (req, res, next) => {
+  const { name, email, password, gender } = req.body;
+  const user = await User.findById(req.user);
+  if (!user) {
+    return next(new SendError("User not found", 404));
+  }
+
+  if (name) user.name = name;
+  if (email) user.email = email;
+  if (password) user.password = password;
+  if (gender) user.gender = gender;
+
+  if (req.file) {
+    if (user.avatar && user.avatar[0].public_id) {
+      await cloudinary.uploader.destroy(user.avatar[0].public_id);
+    }
+
+    const result = await uploadFile([req.file]);
+
+    const avatar = {
+      public_id: result[0].public_id,
+      url: result[0].url,
+    };
+
+    user.avatar = [avatar];
+  }
+
+  await user.save();
+
+  res.json({
+    success: true,
+    message: "Profile Updated Successfully",
+    user: {
+      name: user.name,
+      email: user.email,
+      avatar: user.avatar[0].url,
+      gender: user.gender,
+      createdAt: user.createdAt,
+      updatedAt: user.updatedAt,
     },
   });
 });

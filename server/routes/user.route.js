@@ -4,6 +4,7 @@ import {
   getProfile,
   loginUser,
   logOutUser,
+  updateProfile,
   userRegister,
 } from "../controllers/user.controller.js";
 import { avtarUpload } from "../middlewares/multer.js";
@@ -23,5 +24,6 @@ router.post("/login", loginUser);
 router.use(isAuthenticated);
 router.get("/logout", logOutUser);
 router.get("/profile", getProfile);
+router.put("/profile/update", avtarUpload, updateProfile);
 
 export default router;
