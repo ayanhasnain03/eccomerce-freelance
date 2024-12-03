@@ -35,3 +35,19 @@ export const loginUser = asyncHandler(async (req, res, next) => {
     return next(new SendError("Invalid Email or Password", 400));
   sendTokenToClient(res, user, 200, "User Logged In Successfully");
 });
+
+export const getProfile = asyncHandler(async (req, res, next) => {
+  const getUser = await User.findById(req.user).select("-password");
+  res.json({
+    success: true,
+    user: {
+      name: getUser.name,
+      email: getUser.email,
+      avatar: getUser.avatar[0].url,
+      role: getUser.role,
+      gender: getUser.gender,
+      createdAt: getUser.createdAt,
+      updatedAt: getUser.updatedAt,
+    },
+  });
+});
